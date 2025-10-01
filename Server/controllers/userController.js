@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const Task = require('../models/Task');
 
-// Get all users (admin only)
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password').sort({ createdAt: -1 });
@@ -12,7 +11,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// Update user role (admin only)
 exports.updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
@@ -42,12 +40,10 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-// Delete user (admin only)
 exports.deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
 
-    // Prevent deleting self
     if (userId === req.user.id) {
       return res.status(400).json({ message: 'Cannot delete your own account' });
     }
@@ -57,7 +53,6 @@ exports.deleteUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Delete all tasks assigned to this user
     await Task.deleteMany({ assignedTo: userId });
 
     await User.findByIdAndDelete(userId);

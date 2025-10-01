@@ -1,12 +1,10 @@
 const Task = require('../models/Task');
 const User = require('../models/User');
 
-// Get all tasks (admin sees all, users see only their tasks)
 exports.getAllTasks = async (req, res) => {
   try {
     let query = {};
     
-    // If not admin, only show tasks assigned to the user
     if (req.user.role !== 'admin') {
       query.assignedTo = req.user.id;
     }
@@ -23,7 +21,6 @@ exports.getAllTasks = async (req, res) => {
   }
 };
 
-// Get single task
 exports.getTaskById = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id)
@@ -34,7 +31,6 @@ exports.getTaskById = async (req, res) => {
       return res.status(404).json({ message: 'Task not found' });
     }
 
-    // Check if user has access to this task
     if (req.user.role !== 'admin' && task.assignedTo._id.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Access denied' });
     }
@@ -51,7 +47,6 @@ exports.createTask = async (req, res) => {
   try {
     const { title, description, dueDate, priority, assignedTo } = req.body;
 
-    // Validate assigned user exists
     if (assignedTo) {
       const userExists = await User.findById(assignedTo);
       if (!userExists) {
@@ -95,12 +90,10 @@ exports.updateTask = async (req, res) => {
       return res.status(404).json({ message: 'Task not found' });
     }
 
-    // Check if user has permission to update
     if (req.user.role !== 'admin' && task.assignedTo.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Access denied' });
     }
 
-    // Update fields
     if (title) task.title = title;
     if (description !== undefined) task.description = description;
     if (dueDate) task.dueDate = dueDate;
@@ -132,7 +125,6 @@ exports.deleteTask = async (req, res) => {
       return res.status(404).json({ message: 'Task not found' });
     }
 
-    // Check if user has permission to delete
     if (req.user.role !== 'admin' && task.createdBy.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Access denied' });
     }
@@ -146,7 +138,6 @@ exports.deleteTask = async (req, res) => {
   }
 };
 
-// Get task statistics
 exports.getTaskStats = async (req, res) => {
   try {
     let query = {};

@@ -28,13 +28,42 @@ function TaskForm({ currentUser, onTaskCreated, editingTask, onTaskUpdated, onCa
   }, [currentUser]);
 
   useEffect(() => {
-    if (editingTask) {
-      setTitle(editingTask.title);
-      setDescription(editingTask.description);
-      setDueDate(editingTask.dueDate);
-      setPriority(editingTask.priority);
-      setAssignedTo(editingTask.assignedTo || '');
-    }
+    const fetchTaskDetails = async () => {
+      if (editingTask && editingTask.id) {
+        try {
+          const taskData = await taskAPI.getTaskById(editingTask.id);
+          
+          setTitle(taskData.title || '');
+          setDescription(taskData.description || '');
+          
+          if (taskData.dueDate) {
+            const date = new Date(taskData.dueDate);
+            const formattedDate = date.toISOString().split('T')[0];
+            setDueDate(formattedDate);
+          }
+          
+          setPriority(taskData.priority || 'medium');
+          
+          if (taskData.assignedTo) {
+            const assignedId = taskData.assignedTo._id || taskData.assignedTo;
+            setAssignedTo(assignedId);
+          } else {
+            setAssignedTo('');
+          }
+        } catch (error) {
+          console.error('Error fetching task details:', error);
+          setError('Failed to load task details');
+        }
+      } else {
+        setTitle('');
+        setDescription('');
+        setDueDate('');
+        setPriority('medium');
+        setAssignedTo('');
+      }
+    };
+    
+    fetchTaskDetails();
   }, [editingTask]);
 
   const handleSubmit = async (e) => {

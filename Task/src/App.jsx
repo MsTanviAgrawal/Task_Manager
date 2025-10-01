@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { taskAPI } from './services/api';
 import './App.css';
 import Login from './components/Login';
@@ -13,20 +13,12 @@ import PriorityList from './components/PriorityList';
 import UserManagement from './components/UserManagement';
 import ConfirmDialog from './components/ConfirmDialog';
 
-function App() {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [showAuth, setShowAuth] = useState('login');
+function AppContent({ currentUser, setCurrentUser, showAuth, setShowAuth }) {
+  const navigate = useNavigate();
   const [selectedTask, setSelectedTask] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  const handleLogin = (user, token) => {
-    setCurrentUser(user);
-    if (token) {
-      localStorage.setItem('token', token);
-    }
-  };
 
   const handleLogout = () => {
     setCurrentUser(null);
@@ -48,7 +40,7 @@ function App() {
 
   const handleEditTask = (task) => {
     setEditingTask(task);
-    window.location.href = '/create';
+    navigate('/create');
   };
 
   const handleDeleteTask = (task) => {
@@ -73,6 +65,102 @@ function App() {
     setEditingTask(null);
   };
 
+  return (
+    <div className="app">
+      <Navigation
+        currentUser={currentUser}
+        onLogout={handleLogout}
+      />
+
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          
+          <Route 
+            path="/dashboard" 
+            element={<Dashboard currentUser={currentUser} />} 
+          />
+          
+          <Route 
+            path="/create" 
+            element={
+              <TaskForm
+                currentUser={currentUser}
+                onTaskCreated={handleTaskCreated}
+                editingTask={editingTask}
+                onTaskUpdated={handleTaskUpdated}
+                onCancel={handleCancelEdit}
+              />
+            } 
+          />
+          
+          <Route 
+            path="/tasks" 
+            element={
+              <TaskList
+                currentUser={currentUser}
+                onViewTask={handleViewTask}
+                onEditTask={handleEditTask}
+                onDeleteTask={handleDeleteTask}
+                refreshTrigger={refreshTrigger}
+              />
+            } 
+          />
+          
+          <Route 
+            path="/priority" 
+            element={
+              <PriorityList
+                currentUser={currentUser}
+                onTaskClick={handleViewTask}
+                refreshTrigger={refreshTrigger}
+              />
+            } 
+          />
+          
+          <Route 
+            path="/users" 
+            element={<UserManagement currentUser={currentUser} />} 
+          />
+        </Routes>
+      </main>
+
+      {selectedTask && (
+        <TaskDetails
+          task={selectedTask}
+          currentUser={currentUser}
+          onClose={() => setSelectedTask(null)}
+          onEdit={() => handleEditTask(selectedTask)}
+          onDelete={() => handleDeleteTask(selectedTask)}
+        />
+      )}
+
+      {taskToDelete && (
+        <ConfirmDialog
+          message={`Are you sure you want to delete the task "${taskToDelete.title}"? This action cannot be undone.`}
+          onConfirm={confirmDeleteTask}
+          onCancel={() => setTaskToDelete(null)}
+        />
+      )}
+
+      <footer className="app-footer">
+        <p>© 2025 Task Manager. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
+
+function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [showAuth, setShowAuth] = useState('login');
+
+  const handleLogin = (user, token) => {
+    setCurrentUser(user);
+    if (token) {
+      localStorage.setItem('token', token);
+    }
+  };
+
   if (!currentUser) {
     return (
       <div className="app">
@@ -93,87 +181,12 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="app">
-        <Navigation
-          currentUser={currentUser}
-          onLogout={handleLogout}
-        />
-
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            
-            <Route 
-              path="/dashboard" 
-              element={<Dashboard currentUser={currentUser} />} 
-            />
-            
-            <Route 
-              path="/create" 
-              element={
-                <TaskForm
-                  currentUser={currentUser}
-                  onTaskCreated={handleTaskCreated}
-                  editingTask={editingTask}
-                  onTaskUpdated={handleTaskUpdated}
-                  onCancel={handleCancelEdit}
-                />
-              } 
-            />
-            
-            <Route 
-              path="/tasks" 
-              element={
-                <TaskList
-                  currentUser={currentUser}
-                  onViewTask={handleViewTask}
-                  onEditTask={handleEditTask}
-                  onDeleteTask={handleDeleteTask}
-                  refreshTrigger={refreshTrigger}
-                />
-              } 
-            />
-            
-            <Route 
-              path="/priority" 
-              element={
-                <PriorityList
-                  currentUser={currentUser}
-                  onTaskClick={handleViewTask}
-                  refreshTrigger={refreshTrigger}
-                />
-              } 
-            />
-            
-            <Route 
-              path="/users" 
-              element={<UserManagement currentUser={currentUser} />} 
-            />
-          </Routes>
-        </main>
-
-        {selectedTask && (
-          <TaskDetails
-            task={selectedTask}
-            currentUser={currentUser}
-            onClose={() => setSelectedTask(null)}
-            onEdit={() => handleEditTask(selectedTask)}
-            onDelete={() => handleDeleteTask(selectedTask)}
-          />
-        )}
-
-        {taskToDelete && (
-          <ConfirmDialog
-            message={`Are you sure you want to delete the task "${taskToDelete.title}"? This action cannot be undone.`}
-            onConfirm={confirmDeleteTask}
-            onCancel={() => setTaskToDelete(null)}
-          />
-        )}
-
-        <footer className="app-footer">
-          <p>© 2025 Task Manager. All rights reserved.</p>
-        </footer>
-      </div>
+      <AppContent 
+        currentUser={currentUser} 
+        setCurrentUser={setCurrentUser}
+        showAuth={showAuth}
+        setShowAuth={setShowAuth}
+      />
     </BrowserRouter>
   );
 }
