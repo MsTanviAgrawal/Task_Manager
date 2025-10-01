@@ -1,0 +1,6 @@
+Task/node_modules/
+Server/node_modules/
+node_modules/
+
+# Env files ignore (kahin bhi ho)
+*.env

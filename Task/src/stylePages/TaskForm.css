@@ -1,0 +1,136 @@
+.task-form-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  margin: 2rem auto;
+}
+
+.task-form-container h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: clamp(1.375rem, 3vw, 1.75rem);
+}
+
+.task-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.task-form .form-group label {
+  display: block;
+  color: #555;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.task-form .form-group input,
+.task-form .form-group textarea,
+.task-form .form-group select {
+  width: 100%;
+  padding: clamp(0.625rem, 1.5vw, 0.75rem);
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: clamp(0.938rem, 1.5vw, 1rem);
+  font-family: inherit;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.task-form .form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.task-form .form-group input:focus,
+.task-form .form-group textarea:focus,
+.task-form .form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-submit {
+  flex: 1;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+}
+
+.btn-cancel {
+  padding: 0.875rem 2rem;
+  background: #e0e0e0;
+  color: #555;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #ccc;
+}
+
+.error-message {
+  color: #e74c3c;
+  background: #fee;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .task-form-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .task-form-container {
+    padding: 1.25rem;
+    margin: 0.5rem;
+  }
+
+  .btn-submit,
+  .btn-cancel {
+    padding: 0.75rem;
+    font-size: 0.938rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-cancel {
+    width: 100%;
+  }
+}
