@@ -45,6 +45,11 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
+    // Validate input
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password are required' });
+    }
+
     // Find user
     const user = await User.findOne({ username });
     if (!user) {
@@ -71,7 +76,11 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
+    // Check if it's a MongoDB connection error
+    if (error.name === 'MongooseServerSelectionError') {
+      return res.status(503).json({ message: 'Database connection failed. Please try again later.' });
+    }
+    res.status(500).json({ message: 'Server error during login', details: error.message });
   }
 };
 

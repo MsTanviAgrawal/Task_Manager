@@ -18,13 +18,20 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  if (req.method === 'POST' || req.method === 'PUT') {
+    console.log('Body:', req.body);
+  }
+  next();
+});
 
-mongoose.connect(process.env.MONGODB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('✅ MongoDB Connected Successfully'))
-.catch((err) => console.error('❌ MongoDB Connection Error:', err));
+mongoose.connect(process.env.MONGODB_URL)
+  .then(() => console.log('✅ MongoDB Connected Successfully'))
+  .catch((err) => {
+    console.error('❌ MongoDB Connection Error:', err.message);
+    console.error('⚠️  Make sure: 1) MongoDB URL is correct 2) IP is whitelisted in Atlas 3) Network access allows your IP');
+  });
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -36,8 +43,12 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!', error: err.message });
+  console.error('Error:', err);
+  // Ensure we always return JSON
+  res.status(err.status || 500).json({ 
+    message: err.message || 'Something went wrong!', 
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+  });
 });
 
 // 404 error handle

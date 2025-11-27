@@ -5,23 +5,49 @@ const getAuthToken = () => {
 };
 
 const handleResponse = async (response) => {
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || 'Something went wrong');
+  console.log(`Response Status: ${response.status}, Content-Type: ${response.headers.get('content-type')}`);
+  
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    console.error('Error: Server did not return JSON. Content-Type:', contentType);
+    throw new Error('Server returned invalid content type');
   }
-  return data;
+
+  try {
+    const data = await response.json();
+    if (!response.ok) {
+      const errorMsg = data.message || data.details || 'Something went wrong';
+      console.error(`API Error (${response.status}):`, errorMsg);
+      throw new Error(errorMsg);
+    }
+    return data;
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      console.error('Invalid JSON response from server');
+      throw new Error('Server returned invalid JSON response');
+    }
+    throw error;
+  }
 };
 
 export const authAPI = {
   login: async (username, password) => {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
-    return handleResponse(response);
+    try {
+      if (!username || !password) {
+        throw new Error('Username and password are required');
+      }
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Login request failed:', error);
+      throw error;
+    }
   },
 
   register: async (userData) => {
