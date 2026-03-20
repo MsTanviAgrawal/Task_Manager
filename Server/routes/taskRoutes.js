@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const taskController = require('../controllers/taskController');
-const { authMiddleware } = require('../middleware/auth');
+import taskController from '../controllers/taskController';
+import { authMiddleware } from '../middleware/auth';
 
 router.use(authMiddleware);
 

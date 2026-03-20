@@ -1,5 +1,6 @@
 // const API_URL = '/api';
-const API_URL = 'http://localhost:5000/api';
+// const API_URL = 'http://localhost:5000/api';
+const API_URL = '74.220.56.0/24';
 
 const getAuthToken = () => {
   return localStorage.getItem('token');

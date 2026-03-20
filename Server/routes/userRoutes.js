@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const userController = require('../controllers/userController');
-const { authMiddleware, adminMiddleware } = require('../middleware/auth');
+import userController from '../controllers/userController';
+import { authMiddleware, adminMiddleware } from '../middleware/auth';
 
 router.use(authMiddleware);
 router.use(adminMiddleware);
