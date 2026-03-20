@@ -1,7 +1,7 @@
 import User from '../models/User';
 import generateToken from '../utils/generateToken.js';
 
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
 
@@ -41,7 +41,7 @@ exports.register = async (req, res) => {
 };
 
 // Login user
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -92,7 +92,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.getCurrentUser = async (req, res) => {
+export const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     if (!user) {

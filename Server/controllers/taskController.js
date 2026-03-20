@@ -1,7 +1,7 @@
 import Task from '../models/Task';
 import User from '../models/User';
 
-exports.getAllTasks = async (req, res) => {
+export const getAllTasks = async (req, res) => {
   try {
     let query = {};
     
@@ -21,7 +21,7 @@ exports.getAllTasks = async (req, res) => {
   }
 };
 
-exports.getTaskById = async (req, res) => {
+export const getTaskById = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id)
       .populate('assignedTo', 'username email')
@@ -43,7 +43,7 @@ exports.getTaskById = async (req, res) => {
 };
 
 // Create new task
-exports.createTask = async (req, res) => {
+export const createTask = async (req, res) => {
   try {
     const { title, description, dueDate, priority, assignedTo } = req.body;
 
@@ -81,7 +81,7 @@ exports.createTask = async (req, res) => {
 };
 
 // Update task
-exports.updateTask = async (req, res) => {
+export const updateTask = async (req, res) => {
   try {
     const { title, description, dueDate, priority, status, assignedTo } = req.body;
 
@@ -118,7 +118,7 @@ exports.updateTask = async (req, res) => {
 };
 
 // Delete task
-exports.deleteTask = async (req, res) => {
+export const deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
     if (!task) {
@@ -138,7 +138,7 @@ exports.deleteTask = async (req, res) => {
   }
 };
 
-exports.getTaskStats = async (req, res) => {
+export const getTaskStats = async (req, res) => {
   try {
     let query = {};
     if (req.user.role !== 'admin') {

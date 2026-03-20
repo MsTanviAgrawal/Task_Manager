@@ -1,7 +1,7 @@
 import User from '../models/User';
 import Task from '../models/Task';
 
-exports.getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password').sort({ createdAt: -1 });
     res.json(users);
@@ -11,7 +11,7 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-exports.updateUserRole = async (req, res) => {
+export const updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
     const userId = req.params.id;
@@ -40,7 +40,7 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-exports.deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
 
@@ -65,7 +65,7 @@ exports.deleteUser = async (req, res) => {
 };
 
 // Get user task count
-exports.getUserTaskCount = async (req, res) => {
+export const getUserTaskCount = async (req, res) => {
   try {
     const userId = req.params.id;
     const count = await Task.countDocuments({ assignedTo: userId });
