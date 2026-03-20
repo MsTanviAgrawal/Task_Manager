@@ -13,9 +13,8 @@
 
 .drag-hint {
   text-align: center;
-  color: #666;
+  color: #828282;
   margin-bottom: 2rem;
-  font-style: italic;
   font-size: clamp(0.875rem, 1.5vw, 1rem);
 }
 

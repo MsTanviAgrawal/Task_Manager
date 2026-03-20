@@ -41,7 +41,7 @@ function Navigation({ currentUser, onLogout }) {
                 onClick={closeMobileMenu}
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               >
-                🏠 Dashboard
+                Dashboard
               </NavLink>
             </li>
             <li>
@@ -50,7 +50,7 @@ function Navigation({ currentUser, onLogout }) {
                 onClick={closeMobileMenu}
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               >
-                ➕ Create Task
+                Create Task
               </NavLink>
             </li>
             <li>
@@ -59,7 +59,7 @@ function Navigation({ currentUser, onLogout }) {
                 onClick={closeMobileMenu}
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               >
-                📋 All Tasks
+                All Tasks
               </NavLink>
             </li>
             <li>
@@ -68,7 +68,7 @@ function Navigation({ currentUser, onLogout }) {
                 onClick={closeMobileMenu}
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               >
-                🎯 Priority Board
+                Priority Board
               </NavLink>
             </li>
             {currentUser.role === 'admin' && (
@@ -78,7 +78,7 @@ function Navigation({ currentUser, onLogout }) {
                   onClick={closeMobileMenu}
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                 >
-                  👥 Users
+                  Users
                 </NavLink>
               </li>
             )}

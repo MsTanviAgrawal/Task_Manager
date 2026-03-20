@@ -45,18 +45,29 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Validate input
+    console.log("LOGIN INPUT:", username, password);
+
     if (!username || !password) {
       return res.status(400).json({ message: 'Username and password are required' });
     }
 
-    // Find user
     const user = await User.findOne({ username });
+
+    console.log("USER FOUND:", user);
+
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
+    if (!user.password) {
+      console.error("❌ Password missing in DB");
+      return res.status(500).json({ message: 'User data corrupted' });
+    }
+
     const isMatch = await user.comparePassword(password);
+
+    console.log("PASSWORD MATCH:", isMatch);
+
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
@@ -74,12 +85,9 @@ exports.login = async (req, res) => {
         createdAt: user.createdAt
       }
     });
+
   } catch (error) {
-    console.error('Login error:', error);
-    // Check if it's a MongoDB connection error
-    if (error.name === 'MongooseServerSelectionError') {
-      return res.status(503).json({ message: 'Database connection failed. Please try again later.' });
-    }
+    console.error('🔥 LOGIN ERROR FULL:', error);
     res.status(500).json({ message: 'Server error during login', details: error.message });
   }
 };

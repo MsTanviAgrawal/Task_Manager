@@ -95,6 +95,7 @@
   white-space: nowrap;
   width: 100%;
   text-align: left;
+  text-decoration: none;
 }
 
 .nav-link:hover {
