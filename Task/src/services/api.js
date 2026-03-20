@@ -1,6 +1,10 @@
-// const API_URL = '/api';
+
 // const API_URL = 'http://localhost:5000/api';
-const API_URL = '74.220.56.0/24';
+// const API_URL = '74.220.56.0/24';
+// const API_URL = 'https://task-manager-mxm7.onrender.com';
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+console.log("API_URL:", API_URL);
 
 const getAuthToken = () => {
   return localStorage.getItem('token');
