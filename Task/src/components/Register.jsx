@@ -12,6 +12,8 @@ function Register({ onRegister, onSwitchToLogin }) {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
+  console.log("REGISTER BODY:", req.body);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
