@@ -1,14 +1,25 @@
-import User from '../models/User';
+import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
 
+// Register user
 export const register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
 
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    // Basic validation
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const existingUser = await User.findOne({ 
+      $or: [{ email }, { username }] 
+    });
+
     if (existingUser) {
       return res.status(400).json({ 
-        message: existingUser.email === email ? 'Email already exists' : 'Username already exists' 
+        message: existingUser.email === email 
+          ? 'Email already exists' 
+          : 'Username already exists' 
       });
     }
 
@@ -34,6 +45,7 @@ export const register = async (req, res) => {
         createdAt: user.createdAt
       }
     });
+
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({ message: 'Server error during registration' });
@@ -57,11 +69,6 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password' });
-    }
-
-    if (!user.password) {
-      console.error("❌ Password missing in DB");
-      return res.status(500).json({ message: 'User data corrupted' });
     }
 
     const isMatch = await user.comparePassword(password);
@@ -88,17 +95,24 @@ export const login = async (req, res) => {
 
   } catch (error) {
     console.error('🔥 LOGIN ERROR FULL:', error);
-    res.status(500).json({ message: 'Server error during login', details: error.message });
+    res.status(500).json({ 
+      message: 'Server error during login', 
+      details: error.message 
+    });
   }
 };
 
+// Get current user
 export const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
     res.json(user);
+
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ message: 'Server error' });
