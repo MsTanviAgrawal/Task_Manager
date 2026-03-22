@@ -48,12 +48,12 @@ app.use((req, res, next) => {
 });
 
 // Database
-mongoose
-  .connect(process.env.MONGODB_URL)
-  .then(() => console.log("✅ MongoDB Connected Successfully"))
-  .catch((err) => {
-    console.error("❌ MongoDB Connection Error:", err.message);
-  });
+// mongoose
+//   .connect(process.env.MONGODB_URL)
+//   .then(() => console.log("✅ MongoDB Connected Successfully"))
+//   .catch((err) => {
+//     console.error("❌ MongoDB Connection Error:", err.message);
+//   });
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -83,7 +83,27 @@ app.use((req, res) => {
 });
 
 // Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => {
+//   console.log(`✅ Server running on port ${PORT}`);
+// });
+
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URL);
+
+    console.log("✅ MongoDB Connected Successfully");
+
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+
+  } catch (err) {
+    console.error("❌ MongoDB Connection Error:", err.message);
+    process.exit(1); // stop server if DB fails
+  }
+};
+
+startServer();
