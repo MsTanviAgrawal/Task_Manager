@@ -46,10 +46,20 @@ export const register = async (req, res) => {
       }
     });
 
-  } catch (error) {
-    console.error('Register error:', error);
-    res.status(500).json({ message: 'Server error during registration' });
-  }
+  } 
+  // catch (error) {
+  //   console.error('Register error:', error);
+  //   res.status(500).json({ message: 'Server error during registration' });
+  // }
+  catch (error) {
+  console.error("🔥 FULL REGISTER ERROR:", error);
+  console.error("MESSAGE:", error.message);
+  console.error("STACK:", error.stack);
+
+  res.status(500).json({
+    message: error.message || 'Server error during registration'
+  });
+}
 };
 
 // Login user

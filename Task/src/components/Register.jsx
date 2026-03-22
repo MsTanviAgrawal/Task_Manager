@@ -13,6 +13,7 @@ function Register({ onRegister, onSwitchToLogin }) {
   const [loading, setLoading] = useState(false);
 
   // console.log("REGISTER BODY:", req.body);
+  console.log("REQ BODY:", req.body);
   console.log("REGISTER DATA:", { username, email, password, role });
 
   const handleSubmit = async (e) => {
