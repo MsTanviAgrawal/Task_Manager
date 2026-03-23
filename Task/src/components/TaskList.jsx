@@ -1,16 +1,22 @@
-import { useState, useEffect } from 'react';
-import { taskAPI } from '../services/api';
-import TaskItem from './TaskItem';
-import Pagination from './Pagination';
-import '../stylePages/TaskList.css';
+import { useState, useEffect } from "react";
+import { taskAPI } from "../services/api";
+import TaskItem from "./TaskItem";
+import Pagination from "./Pagination";
+import "../stylePages/TaskList.css";
 
-function TaskList({ currentUser, onViewTask, onEditTask, onDeleteTask, refreshTrigger }) {
+function TaskList({
+  currentUser,
+  onViewTask,
+  onEditTask,
+  onDeleteTask,
+  refreshTrigger,
+}) {
   const [tasks, setTasks] = useState([]);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterPriority, setFilterPriority] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterPriority, setFilterPriority] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const tasksPerPage = 5;
 
   useEffect(() => {
@@ -24,15 +30,18 @@ function TaskList({ currentUser, onViewTask, onEditTask, onDeleteTask, refreshTr
   const loadTasks = async () => {
     try {
       const data = await taskAPI.getAllTasks();
-      const formattedTasks = data.map(task => ({
+      const formattedTasks = data.map((task) => ({
         ...task,
         id: task._id,
-        assignedTo: task.assignedTo._id || task.assignedTo,
-        createdBy: task.createdBy._id || task.createdBy
+        // assignedTo: task.assignedTo._id || task.assignedTo,
+        // createdBy: task.createdBy._id || task.createdBy
+
+        assignedTo: task.assignedTo?._id || task.assignedTo || null,
+        createdBy: task.createdBy?._id || task.createdBy || null,
       }));
       setTasks(formattedTasks);
     } catch (error) {
-      console.error('Error loading tasks:', error);
+      console.error("Error loading tasks:", error);
       setTasks([]);
     }
   };
@@ -40,18 +49,19 @@ function TaskList({ currentUser, onViewTask, onEditTask, onDeleteTask, refreshTr
   const applyFilters = () => {
     let filtered = [...tasks];
 
-    if (filterStatus !== 'all') {
-      filtered = filtered.filter(task => task.status === filterStatus);
+    if (filterStatus !== "all") {
+      filtered = filtered.filter((task) => task.status === filterStatus);
     }
 
-    if (filterPriority !== 'all') {
-      filtered = filtered.filter(task => task.priority === filterPriority);
+    if (filterPriority !== "all") {
+      filtered = filtered.filter((task) => task.priority === filterPriority);
     }
 
     if (searchQuery.trim()) {
-      filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (task) =>
+          task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          task.description.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -62,11 +72,19 @@ function TaskList({ currentUser, onViewTask, onEditTask, onDeleteTask, refreshTr
   const handleStatusUpdate = async (taskId, newStatus) => {
     try {
       await taskAPI.updateTask(taskId, { status: newStatus });
-      setTasks(prevTasks => prevTasks.map(task =>
-        task.id === taskId ? { ...task, status: newStatus, updatedAt: new Date().toISOString() } : task
-      ));
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId
+            ? {
+                ...task,
+                status: newStatus,
+                updatedAt: new Date().toISOString(),
+              }
+            : task,
+        ),
+      );
     } catch (error) {
-      console.error('Error updating task status:', error);
+      console.error("Error updating task status:", error);
     }
   };
 
@@ -82,8 +100,14 @@ function TaskList({ currentUser, onViewTask, onEditTask, onDeleteTask, refreshTr
         <h2>My Tasks</h2>
         <div className="task-stats">
           <span className="stat">Total: {filteredTasks.length}</span>
-          <span className="stat pending">Pending: {filteredTasks.filter(t => t.status === 'pending').length}</span>
-          <span className="stat completed">Completed: {filteredTasks.filter(t => t.status === 'completed').length}</span>
+          <span className="stat pending">
+            Pending:{" "}
+            {filteredTasks.filter((t) => t.status === "pending").length}
+          </span>
+          <span className="stat completed">
+            Completed:{" "}
+            {filteredTasks.filter((t) => t.status === "completed").length}
+          </span>
         </div>
       </div>
 
@@ -126,7 +150,7 @@ function TaskList({ currentUser, onViewTask, onEditTask, onDeleteTask, refreshTr
             <p>No tasks found</p>
           </div>
         ) : (
-          currentTasks.map(task => (
+          currentTasks.map((task) => (
             <TaskItem
               key={task.id}
               task={task}

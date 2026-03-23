@@ -9,10 +9,23 @@ export const getAllTasks = async (req, res) => {
       query.assignedTo = req.user.id;
     }
 
+    // const tasks = await Task.find(query)
+    //   .populate('assignedTo', 'username email')
+    //   .populate('createdBy', 'username email')
+    //   .sort({ createdAt: -1 });
+
     const tasks = await Task.find(query)
-      .populate('assignedTo', 'username email')
-      .populate('createdBy', 'username email')
-      .sort({ createdAt: -1 });
+  .populate({
+    path: 'assignedTo',
+    select: 'username email',
+    options: { strictPopulate: false }
+  })
+  .populate({
+    path: 'createdBy',
+    select: 'username email',
+    options: { strictPopulate: false }
+  })
+  .sort({ createdAt: -1 });
 
     res.json(tasks);
   } catch (error) {
