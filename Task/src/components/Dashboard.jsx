@@ -2,6 +2,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { taskAPI } from '../services/api';
 import '../stylePages/Dashboard.css';
+import { BiSolidBarChartSquare } from "react-icons/bi";
+import { BsHourglassSplit } from "react-icons/bs";
+import { MdRepeatOn } from "react-icons/md";
+import { LuSquareCheckBig } from "react-icons/lu";
+import { MdOutlineLibraryAdd } from "react-icons/md";
+import { LiaClipboardListSolid } from "react-icons/lia";
+import { TbTargetArrow } from "react-icons/tb";
+import { FcCalendar } from "react-icons/fc";
+import { TbAlertTriangle } from "react-icons/tb";
+import { FiUsers } from "react-icons/fi";
 
 function Dashboard({ currentUser }) {
   const navigate = useNavigate();
@@ -56,7 +66,7 @@ function Dashboard({ currentUser }) {
 
       <div className="stats-grid">
         <div className="stat-card total">
-          <div className="stat-icon">📊</div>
+          <div className="stat-icon1"><BiSolidBarChartSquare /></div>
           <div className="stat-content">
             <h3>{stats.total}</h3>
             <p>Total Tasks</p>
@@ -64,7 +74,7 @@ function Dashboard({ currentUser }) {
         </div>
 
         <div className="stat-card pending">
-          <div className="stat-icon">⏳</div>
+          <div className="stat-icon2"><BsHourglassSplit /></div>
           <div className="stat-content">
             <h3>{stats.pending}</h3>
             <p>Pending</p>
@@ -72,7 +82,7 @@ function Dashboard({ currentUser }) {
         </div>
 
         <div className="stat-card in-progress">
-          <div className="stat-icon">🔄</div>
+          <div className="stat-icon3"><MdRepeatOn /></div>
           <div className="stat-content">
             <h3>{stats.inProgress}</h3>
             <p>In Progress</p>
@@ -80,7 +90,7 @@ function Dashboard({ currentUser }) {
         </div>
 
         <div className="stat-card completed">
-          <div className="stat-icon">✅</div>
+          <div className="stat-icon4"><LuSquareCheckBig /></div>
           <div className="stat-content">
             <h3>{stats.completed}</h3>
             <p>Completed</p>
@@ -89,7 +99,7 @@ function Dashboard({ currentUser }) {
 
         {stats.overdue > 0 && (
           <div className="stat-card overdue">
-            <div className="stat-icon">⚠️</div>
+            <div className="stat-icon5"><TbAlertTriangle /></div>
             <div className="stat-content">
               <h3>{stats.overdue}</h3>
               <p>Overdue</p>
@@ -148,7 +158,8 @@ function Dashboard({ currentUser }) {
                       {task.status}
                     </span>
                     <span className="due-date-badge">
-                      📅 {formatDate(task.dueDate)}
+                      <FcCalendar className="due-date-badge-icon" /> 
+                      {formatDate(task.dueDate)}
                     </span>
                   </div>
                 </div>
@@ -162,20 +173,20 @@ function Dashboard({ currentUser }) {
         <h2>Quick Actions</h2>
         <div className="action-buttons">
           <button onClick={() => navigate('/create')} className="action-btn create">
-            <span className="action-icon">➕</span>
+            <span className="action-icon"><MdOutlineLibraryAdd /></span>
             Create Task
           </button>
           <button onClick={() => navigate('/tasks')} className="action-btn view">
-            <span className="action-icon">📋</span>
+            <span className="action-icon"><LiaClipboardListSolid /></span>
             View All Tasks
           </button>
           <button onClick={() => navigate('/priority')} className="action-btn priority">
-            <span className="action-icon">🎯</span>
+            <span className="action-icon"><TbTargetArrow /></span>
             Priority Board
           </button>
           {currentUser.role === 'admin' && (
             <button onClick={() => navigate('/users')} className="action-btn users">
-              <span className="action-icon">👥</span>
+              <span className="action-icon"><FiUsers /></span>
               Manage Users
             </button>
           )}

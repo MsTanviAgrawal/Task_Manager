@@ -9,7 +9,6 @@ async function seedDatabase() {
     await mongoose.connect(process.env.MONGODB_URL);
     console.log('✅ MongoDB Connected');
 
-    // Create test users
     const testUsers = [
       {
         username: 'testuser',
@@ -31,7 +30,7 @@ async function seedDatabase() {
       if (!existing) {
         const user = new User(userData);
         await user.save();
-        console.log(`✅ Created user: ${userData.username}`);
+        // console.log(`✅ Created user: ${userData.username}`);
       } else {
         console.log(`⚠️ User already exists: ${userData.username}`);
       }
@@ -46,7 +45,7 @@ async function seedDatabase() {
     });
 
     await mongoose.connection.close();
-    console.log('\n✅ Seed completed successfully!');
+    // console.log('\n✅ Seed completed successfully!');
   } catch (error) {
     console.error('❌ Seed error:', error.message);
     process.exit(1);

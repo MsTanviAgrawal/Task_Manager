@@ -50,19 +50,41 @@
 .stat-card.completed { border-left-color: #28a745; }
 .stat-card.overdue { border-left-color: #dc3545; }
 
-.stat-icon {
+.stat-icon1 {
   font-size: clamp(2rem, 4vw, 2.5rem);
+  color: #667eea;
 }
+.stat-icon2 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  color:  #ffc107;
+}
+.stat-icon3 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  color: #0d6efd;
+}
+.stat-icon4 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  color: #28a745;
+}
+.stat-icon5 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  color: #dc3545;
+}
+
+
 
 .stat-content h3 {
   margin: 0;
   font-size: clamp(1.5rem, 3vw, 2rem);
-  color: #333;
+  color: black;
+  font-weight: 700;
+  align-items: center;
 }
 
 .stat-content p {
   margin: 0.25rem 0 0 0;
   color: #666;
+  font-size: clamp(0.938rem, 2vw, 1.1rem);
   font-weight: 500;
 }
 
@@ -239,6 +261,13 @@
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 600;
+  
+}
+
+.due-date-badge-icon{
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
 }
 
 .priority-badge.priority-low {

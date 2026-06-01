@@ -12,9 +12,8 @@ function Register({ onRegister, onSwitchToLogin }) {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // console.log("REGISTER BODY:", req.body);
-  console.log("REQ BODY:", req.body);
-  console.log("REGISTER DATA:", { username, email, password, role });
+  // console.log("REQ BODY:", req.body);
+  // console.log("REGISTER DATA:", { username, email, password, role });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +44,7 @@ function Register({ onRegister, onSwitchToLogin }) {
       setSuccess('Registration successful! Logging you in...');
       setTimeout(() => {
         onRegister(data.user, data.token);
-      }, 1000);
+      });
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
