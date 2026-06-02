@@ -48,10 +48,10 @@ function Navigation({ currentUser, onLogout }) {
           
           {/* Mobile Only Header inside Drawer Panel */}
           <div className="mobile-drawer-header">
-            <h2>Menu</h2>
-            <button className="drawer-close-btn" onClick={closeMobileMenu} aria-label="Close menu">
+            <h2>Task Manager</h2>
+            {/* <button className="drawer-close-btn" onClick={closeMobileMenu} aria-label="Close menu">
               <XIcon />
-            </button>
+            </button> */}
           </div>
 
           <ul className="nav-menu">
