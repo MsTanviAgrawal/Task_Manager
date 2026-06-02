@@ -17,14 +17,24 @@ function Navigation({ currentUser, onLogout }) {
   return (
     <nav className="navigation">
       <div className="nav-container">
+        
+        {/* BRAND BRAND ELEMENT */}
         <div className="nav-brand">
           <h1>Task Manager</h1>
         </div>
 
+        {/* BACK BACKDROP MASK OVERLAY LAYER - Decreases background opacity on toggle */}
+        <div 
+          className={`nav-backdrop-overlay ${mobileMenuOpen ? 'visible' : ''}`}
+          onClick={closeMobileMenu}
+        />
+
+        {/* MOBILE DYNAMIC HAMBURGER CONTROLLER TOGGLE */}
         <button 
           className="mobile-menu-toggle"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
+          aria-expanded={mobileMenuOpen}
         >
           <span className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}>
             <span></span>
@@ -33,7 +43,17 @@ function Navigation({ currentUser, onLogout }) {
           </span>
         </button>
 
+        {/* LEFT SLIDE-OUT MENU WRAPPER ENGINE */}
         <div className={`nav-menu-wrapper ${mobileMenuOpen ? 'open' : ''}`}>
+          
+          {/* Mobile Only Header inside Drawer Panel */}
+          <div className="mobile-drawer-header">
+            <h2>Menu</h2>
+            <button className="drawer-close-btn" onClick={closeMobileMenu} aria-label="Close menu">
+              <XIcon />
+            </button>
+          </div>
+
           <ul className="nav-menu">
             <li>
               <NavLink
@@ -99,9 +119,17 @@ function Navigation({ currentUser, onLogout }) {
             </button>
           </div>
         </div>
+
       </div>
     </nav>
   );
 }
+
+const XIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
 
 export default Navigation;

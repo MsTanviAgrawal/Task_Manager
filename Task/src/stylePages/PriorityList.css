@@ -53,10 +53,10 @@
 
 .task-count {
   background: rgba(255, 255, 255, 0.3);
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  padding: 0.4rem 0.8rem;
+  border-radius: 50px;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .priority-tasks {
