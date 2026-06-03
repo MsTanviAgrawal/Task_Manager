@@ -9,6 +9,7 @@ router.use(authMiddleware);
 
 // Task routes
 router.get('/stats', taskController.getTaskStats);
+router.get('/dashboard-summary', taskController.getDashboardSummary);
 router.get('/', taskController.getAllTasks);
 router.get('/:id', taskController.getTaskById);
 router.post('/', taskController.createTask);

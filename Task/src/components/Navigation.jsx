@@ -4,6 +4,7 @@ import '../stylePages/Navigation.css';
 
 function Navigation({ currentUser, onLogout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isLoggedIn = Boolean(currentUser);
 
   const handleLogout = () => {
     onLogout();
@@ -91,7 +92,7 @@ function Navigation({ currentUser, onLogout }) {
                 Priority Board
               </NavLink>
             </li>
-            {currentUser.role === 'admin' && (
+            {isLoggedIn && currentUser.role === 'admin' && (
               <li>
                 <NavLink
                   to="/users"
@@ -105,18 +106,31 @@ function Navigation({ currentUser, onLogout }) {
           </ul>
 
           <div className="nav-user">
-            <div className="user-info-nav">
-              <div className="user-avatar-nav">
-                {currentUser.username.charAt(0).toUpperCase()}
+            {isLoggedIn ? (
+              <>
+                <div className="user-info-nav">
+                  <div className="user-avatar-nav">
+                    {currentUser.username?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                  <div className="user-details">
+                    <span className="user-name">{currentUser.username}</span>
+                    <span className="user-role">{currentUser.role}</span>
+                  </div>
+                </div>
+                <button onClick={handleLogout} className="btn-logout">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <div className="nav-auth-actions">
+                <NavLink to="/login" onClick={closeMobileMenu} className="btn-auth btn-auth-login">
+                  Login
+                </NavLink>
+                <NavLink to="/register" onClick={closeMobileMenu} className="btn-auth btn-auth-signup">
+                  Sign Up
+                </NavLink>
               </div>
-              <div className="user-details">
-                <span className="user-name">{currentUser.username}</span>
-                <span className="user-role">{currentUser.role}</span>
-              </div>
-            </div>
-            <button onClick={handleLogout} className="btn-logout">
-              Logout
-            </button>
+            )}
           </div>
         </div>
 

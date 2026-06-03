@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { taskAPI } from './services/api';
 import './App.css';
 import Login from './components/Login';
@@ -13,8 +13,47 @@ import PriorityList from './components/PriorityList';
 import UserManagement from './components/UserManagement';
 import ConfirmDialog from './components/ConfirmDialog';
 
-function AppContent({ currentUser, setCurrentUser, showAuth, setShowAuth }) {
+function ProtectedRoute({ currentUser, children }) {
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+function AuthPage({ mode, onAuthSuccess }) {
+  const [showAuth, setShowAuth] = useState(mode);
   const navigate = useNavigate();
+
+  const handleAuthSuccess = (user, token) => {
+    onAuthSuccess(user, token);
+    navigate('/dashboard');
+  };
+
+  return (
+    <div className="app auth-page">
+      {showAuth === 'login' ? (
+        <Login
+          onLogin={(user, token) => {
+            handleAuthSuccess(user, token);
+          }}
+          onSwitchToRegister={() => setShowAuth('register')}
+        />
+      ) : (
+        <Register
+          onRegister={(user, token) => {
+            handleAuthSuccess(user, token);
+          }}
+          onSwitchToLogin={() => setShowAuth('login')}
+        />
+      )}
+    </div>
+  );
+}
+
+function AppContent({ currentUser, setCurrentUser, onAuthSuccess }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [selectedTask, setSelectedTask] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [taskToDelete, setTaskToDelete] = useState(null);
@@ -23,6 +62,8 @@ function AppContent({ currentUser, setCurrentUser, showAuth, setShowAuth }) {
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/dashboard');
   };
 
   const handleTaskCreated = () => {
@@ -65,63 +106,77 @@ function AppContent({ currentUser, setCurrentUser, showAuth, setShowAuth }) {
     setEditingTask(null);
   };
 
+  const showShell = !['/login', '/register'].includes(location.pathname);
+
   return (
     <div className="app">
-      <Navigation
-        currentUser={currentUser}
-        onLogout={handleLogout}
-      />
+      {showShell && (
+        <Navigation
+          currentUser={currentUser}
+          onLogout={handleLogout}
+        />
+      )}
 
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          
-          <Route 
-            path="/dashboard" 
-            element={<Dashboard currentUser={currentUser} />} 
-          />
-          
-          <Route 
-            path="/create" 
+          <Route path="/dashboard" element={<Dashboard currentUser={currentUser} />} />
+          <Route path="/login" element={<AuthPage mode="login" onAuthSuccess={onAuthSuccess} />} />
+          <Route path="/register" element={<AuthPage mode="register" onAuthSuccess={onAuthSuccess} />} />
+
+          <Route
+            path="/create"
             element={
-              <TaskForm
-                currentUser={currentUser}
-                onTaskCreated={handleTaskCreated}
-                editingTask={editingTask}
-                onTaskUpdated={handleTaskUpdated}
-                onCancel={handleCancelEdit}
-              />
-            } 
+              <ProtectedRoute currentUser={currentUser}>
+                <TaskForm
+                  currentUser={currentUser}
+                  onTaskCreated={handleTaskCreated}
+                  editingTask={editingTask}
+                  onTaskUpdated={handleTaskUpdated}
+                  onCancel={handleCancelEdit}
+                />
+              </ProtectedRoute>
+            }
           />
-          
-          <Route 
-            path="/tasks" 
+
+          <Route
+            path="/tasks"
             element={
-              <TaskList
-                currentUser={currentUser}
-                onViewTask={handleViewTask}
-                onEditTask={handleEditTask}
-                onDeleteTask={handleDeleteTask}
-                refreshTrigger={refreshTrigger}
-              />
-            } 
+              <ProtectedRoute currentUser={currentUser}>
+                <TaskList
+                  currentUser={currentUser}
+                  onViewTask={handleViewTask}
+                  onEditTask={handleEditTask}
+                  onDeleteTask={handleDeleteTask}
+                  refreshTrigger={refreshTrigger}
+                />
+              </ProtectedRoute>
+            }
           />
-          
-          <Route 
-            path="/priority" 
+
+          <Route
+            path="/priority"
             element={
-              <PriorityList
-                currentUser={currentUser}
-                onTaskClick={handleViewTask}
-                refreshTrigger={refreshTrigger}
-              />
-            } 
+              <ProtectedRoute currentUser={currentUser}>
+                <PriorityList
+                  currentUser={currentUser}
+                  onTaskClick={handleViewTask}
+                  refreshTrigger={refreshTrigger}
+                />
+              </ProtectedRoute>
+            }
           />
-          
-          <Route 
-            path="/users" 
-            element={<UserManagement currentUser={currentUser} />} 
+
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute currentUser={currentUser}>
+                <UserManagement currentUser={currentUser} />
+              </ProtectedRoute>
+            }
           />
+
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </main>
 
@@ -143,49 +198,39 @@ function AppContent({ currentUser, setCurrentUser, showAuth, setShowAuth }) {
         />
       )}
 
-      <footer className="app-footer">
-        <p>© 2025 Task Manager. All rights reserved.</p>
-      </footer>
+      {showShell && (
+        <footer className="app-footer">
+          <p>© 2025 Task Manager. All rights reserved.</p>
+        </footer>
+      )}
     </div>
   );
 }
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [showAuth, setShowAuth] = useState('login');
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null');
+    } catch (error) {
+      console.error('Failed to restore user session:', error);
+      return null;
+    }
+  });
 
-  const handleLogin = (user, token) => {
+  const handleAuthSuccess = (user, token) => {
     setCurrentUser(user);
     if (token) {
       localStorage.setItem('token', token);
     }
+    localStorage.setItem('user', JSON.stringify(user));
   };
-
-  if (!currentUser) {
-    return (
-      <div className="app">
-        {showAuth === 'login' ? (
-          <Login
-            onLogin={handleLogin}
-            onSwitchToRegister={() => setShowAuth('register')}
-          />
-        ) : (
-          <Register
-            onRegister={handleLogin}
-            onSwitchToLogin={() => setShowAuth('login')}
-          />
-        )}
-      </div>
-    );
-  }
 
   return (
     <BrowserRouter>
-      <AppContent 
-        currentUser={currentUser} 
+      <AppContent
+        currentUser={currentUser}
         setCurrentUser={setCurrentUser}
-        showAuth={showAuth}
-        setShowAuth={setShowAuth}
+        onAuthSuccess={handleAuthSuccess}
       />
     </BrowserRouter>
   );

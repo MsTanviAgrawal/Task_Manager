@@ -13,55 +13,60 @@ import { FcCalendar } from "react-icons/fc";
 import { TbAlertTriangle } from "react-icons/tb";
 import { FiUsers } from "react-icons/fi";
 
+const DEFAULT_STATS = {
+  total: 0,
+  pending: 0,
+  inProgress: 0,
+  completed: 0,
+  overdue: 0,
+  byPriority: { low: 0, medium: 0, high: 0, urgent: 0 }
+};
+
 function Dashboard({ currentUser }) {
   const navigate = useNavigate();
-  const [stats, setStats] = useState({
-    total: 0,
-    pending: 0,
-    inProgress: 0,
-    completed: 0,
-    overdue: 0,
-    byPriority: { low: 0, medium: 0, high: 0, urgent: 0 }
-  });
-
+  const [stats, setStats] = useState(DEFAULT_STATS);
   const [recentTasks, setRecentTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!currentUser) {
+      setStats(DEFAULT_STATS);
+      setRecentTasks([]);
+      return;
+    }
     loadDashboardData();
   }, [currentUser]);
 
   const loadDashboardData = async () => {
+    setLoading(true);
     try {
-      const [tasksData, statsData] = await Promise.all([
-        taskAPI.getAllTasks(),
-        taskAPI.getTaskStats()
-      ]);
-
-      setStats(statsData);
-
-      const recent = tasksData
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 5)
-        .map(task => ({
-          ...task,
-          id: task._id
-        }));
-      setRecentTasks(recent);
+      const data = await taskAPI.getDashboardSummary();
+      setStats(data?.stats || DEFAULT_STATS);
+      setRecentTasks(Array.isArray(data?.recentTasks) ? data.recentTasks : []);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
+      setStats(DEFAULT_STATS);
+      setRecentTasks([]);
+    } finally {
+      setLoading(false);
     }
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'No date';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return isNaN(date.getTime()) ? 'Invalid date' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
+
+  const isLoggedIn = Boolean(currentUser);
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1>Welcome, {currentUser.username}! 👋</h1>
-        <p className="dashboard-subtitle">Here's an overview of your tasks</p>
+        <h1>{isLoggedIn ? `Welcome, ${currentUser.username}! 👋` : 'Welcome to Task Manager 👋'}</h1>
+        <p className="dashboard-subtitle">
+          {isLoggedIn ? "Here's an overview of your tasks" : 'Sign in to create, track, and manage your tasks in one place.'}
+        </p>
       </div>
 
       <div className="stats-grid">
@@ -132,22 +137,32 @@ function Dashboard({ currentUser }) {
       <div className="recent-tasks-section">
         <div className="section-header">
           <h2>Recent Tasks</h2>
-          <button onClick={() => navigate('/tasks')} className="btn-view-all">
-            View All →
-          </button>
+          {isLoggedIn && recentTasks.length > 0 && (
+            <button onClick={() => navigate('/tasks')} className="btn-view-all">
+              View All →
+            </button>
+          )}
         </div>
         
-        {recentTasks.length === 0 ? (
+        {loading ? (
+           <p>Loading tasks...</p>
+        ) : recentTasks.length === 0 ? (
           <div className="empty-state">
-            <p>No tasks yet. Create your first task!</p>
-            <button onClick={() => navigate('/create')} className="btn-create-first">
-              Create Task
-            </button>
+            <p>{isLoggedIn ? 'No tasks yet. Create your first task!' : 'Log in to see your recent tasks and start managing work.'}</p>
+            {isLoggedIn ? (
+              <button onClick={() => navigate('/create')} className="btn-create-first">
+                Create Task
+              </button>
+            ) : (
+              <button onClick={() => navigate('/login')} className="btn-create-first">
+                Login to get started
+              </button>
+            )}
           </div>
         ) : (
           <div className="recent-tasks-list">
             {recentTasks.map(task => (
-              <div key={task.id} className="recent-task-item">
+              <div key={task.id || task._id} className="recent-task-item">
                 <div className="task-info">
                   <h4>{task.title}</h4>
                   <div className="task-meta-inline">
@@ -172,23 +187,38 @@ function Dashboard({ currentUser }) {
       <div className="quick-actions">
         <h2>Quick Actions</h2>
         <div className="action-buttons">
-          <button onClick={() => navigate('/create')} className="action-btn create">
-            <span className="action-icon"><MdOutlineLibraryAdd /></span>
-            Create Task
-          </button>
-          <button onClick={() => navigate('/tasks')} className="action-btn view">
-            <span className="action-icon"><LiaClipboardListSolid /></span>
-            View All Tasks
-          </button>
-          <button onClick={() => navigate('/priority')} className="action-btn priority">
-            <span className="action-icon"><TbTargetArrow /></span>
-            Priority Board
-          </button>
-          {currentUser.role === 'admin' && (
-            <button onClick={() => navigate('/users')} className="action-btn users">
-              <span className="action-icon"><FiUsers /></span>
-              Manage Users
-            </button>
+          {isLoggedIn ? (
+            <>
+              <button onClick={() => navigate('/create')} className="action-btn create">
+                <span className="action-icon"><MdOutlineLibraryAdd /></span>
+                Create Task
+              </button>
+              <button onClick={() => navigate('/tasks')} className="action-btn view">
+                <span className="action-icon"><LiaClipboardListSolid /></span>
+                View All Tasks
+              </button>
+              <button onClick={() => navigate('/priority')} className="action-btn priority">
+                <span className="action-icon"><TbTargetArrow /></span>
+                Priority Board
+              </button>
+              {currentUser.role === 'admin' && (
+                <button onClick={() => navigate('/users')} className="action-btn users">
+                  <span className="action-icon"><FiUsers /></span>
+                  Manage Users
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <button onClick={() => navigate('/login')} className="action-btn create">
+                <span className="action-icon"><MdOutlineLibraryAdd /></span>
+                Login
+              </button>
+              <button onClick={() => navigate('/register')} className="action-btn view">
+                <span className="action-icon"><LiaClipboardListSolid /></span>
+                Sign Up
+              </button>
+            </>
           )}
         </div>
       </div>
