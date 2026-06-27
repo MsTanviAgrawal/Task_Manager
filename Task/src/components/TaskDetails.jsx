@@ -95,13 +95,13 @@ function TaskDetails({ task, onClose, onEdit, onDelete, currentUser }) {
 
             <div className="detail-item">
               <label>Created At</label>
-              <p>{formatDate(task.createdAt)}</p>
+              <p className='date'>{formatDate(task.createdAt)}</p>
             </div>
 
             {task.updatedAt && (
               <div className="detail-item">
                 <label>Last Updated</label>
-                <p>{formatDate(task.updatedAt)}</p>
+                <p className='date'>{formatDate(task.updatedAt)}</p>
               </div>
             )}
           </div>

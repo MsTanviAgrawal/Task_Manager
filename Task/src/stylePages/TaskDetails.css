@@ -25,14 +25,19 @@
 .task-details-modal {
   background: white;
   border-radius: 16px;
+  border: 2px solid #667eea;
   max-width: 800px;
   width: 100%;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow: auto;
   position: relative;
   animation: slideUp 0.3s;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  -ms-overflow-style: none;  
+  scrollbar-width: none;     
 }
+
+
 
 @keyframes slideUp {
   from {
@@ -69,16 +74,16 @@
 }
 
 .task-details-header {
-  padding: 2rem;
+  padding: 0.5rem 1.5rem;
   border-bottom: 2px solid #f0f0f0;
 }
 
 .task-details-header h2 {
   color: #333;
-  margin: 0 0 1rem 0;
+  margin: 0.5rem 0 ;
   font-size: clamp(1.375rem, 3vw, 2rem);
-  padding-right: 3rem;
   word-break: break-word;
+  text-transform: capitalize;
 }
 
 .header-badges {
@@ -120,16 +125,15 @@
 }
 
 .task-details-content {
-  padding: 2rem;
+  padding: 0.9rem 1.5rem ;
 }
 
 .detail-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .detail-section h3 {
   color: #555;
-  margin: 0 0 0.75rem 0;
   font-size: clamp(1.125rem, 2vw, 1.25rem);
 }
 
@@ -156,9 +160,9 @@
 
 .detail-item label {
   display: block;
-  color: #888;
-  font-size: 0.875rem;
-  font-weight: 600;
+  color: #595959;
+  font-size: 0.9rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -167,7 +171,12 @@
 .detail-item p {
   color: #333;
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.8;
+}
+
+.detail-item .date{
+  color: #0897a3;
 }
 
 .overdue-text {
@@ -186,8 +195,10 @@
   font-weight: 700;
 }
 
-.status-text {
+.detail-item .status-text {
   font-weight: 600;
+  color: #9545f8;
+  background: #f8f9fa;
 }
 
 .task-details-actions {
