@@ -12,6 +12,28 @@
   color: #333;
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Continuous Waving Hand Animation */
+.waving-hand {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: wave-animation 2.2s infinite ease-in-out;
+}
+
+@keyframes wave-animation {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
 }
 
 .dashboard-subtitle {
@@ -20,16 +42,17 @@
   margin: 0;
 }
 
+/* Base Stats Grid - Defaults to multi-column desktop layout */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .stat-card {
   background: white;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -56,7 +79,7 @@
 }
 .stat-icon2 {
   font-size: clamp(2rem, 4vw, 2.5rem);
-  color:  #ffc107;
+  color: #ffc107;
 }
 .stat-icon3 {
   font-size: clamp(2rem, 4vw, 2.5rem);
@@ -71,11 +94,9 @@
   color: #dc3545;
 }
 
-
-
 .stat-content h3 {
   margin: 0;
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.4rem, 3vw, 2rem);
   color: black;
   font-weight: 700;
   align-items: center;
@@ -84,7 +105,7 @@
 .stat-content p {
   margin: 0.25rem 0 0 0;
   color: #666;
-  font-size: clamp(0.938rem, 2vw, 1.1rem);
+  font-size: clamp(0.875rem, 2vw, 1.05rem);
   font-weight: 500;
 }
 
@@ -261,10 +282,9 @@
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 600;
-  
 }
 
-.due-date-badge-icon{
+.due-date-badge-icon {
   font-size: 1rem;
   vertical-align: middle;
   margin-right: 0.5rem;
@@ -369,6 +389,26 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* ----------------------------------------------------
+   DESKTOP SCREEN VIEW - All Cards in Single Row
+---------------------------------------------------- */
+@media (min-width: 1025px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+}
+
+/* ----------------------------------------------------
+   TABLET & SMALL DESKTOP VIEW
+---------------------------------------------------- */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 0 0.5rem;
@@ -376,15 +416,6 @@
 
   .dashboard-header {
     margin-bottom: 1.5rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-  }
-
-  .stat-card {
-    padding: 1rem;
   }
 
   .priority-bar-item {
@@ -407,18 +438,38 @@
   }
 }
 
-@media (max-width: 480px) {
+/* ----------------------------------------------------
+   MOBILE VIEW - Exactly 2 Cards Per Row
+---------------------------------------------------- */
+@media (max-width: 600px) {
   .dashboard-container {
-    margin: 1rem auto;
+    margin: 1rem 0.5rem;
   }
 
   .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 0.875rem;
+    grid-template-columns: repeat(2, 1fr); /* Force 2 cards per row */
+    gap: 0.75rem;
   }
 
-  .stat-icon {
-    font-size: 2rem;
+  .stat-card {
+    padding: 0.875rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .stat-icon1,
+  .stat-icon2,
+  .stat-icon3,
+  .stat-icon4,
+  .stat-icon5 {
+    font-size: 1.75rem;
+  }
+
+  .stat-content h3 {
+    font-size: 1.25rem;
+  }
+
+  .stat-content p {
+    font-size: 0.813rem;
   }
 
   .priority-stats,
@@ -431,5 +482,13 @@
   .action-btn {
     padding: 0.875rem;
     font-size: 0.938rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .stat-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
   }
 }

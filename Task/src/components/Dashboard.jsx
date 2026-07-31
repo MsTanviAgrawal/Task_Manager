@@ -63,7 +63,17 @@ function Dashboard({ currentUser }) {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1>{isLoggedIn ? `Welcome, ${currentUser.username}! 👋` : 'Welcome to Task Manager 👋'}</h1>
+        <h1>
+          {isLoggedIn ? (
+            <>
+              Welcome, {currentUser.username}! <span className="waving-hand">👋</span>
+            </>
+          ) : (
+            <>
+              Welcome to Task Manager <span className="waving-hand">👋</span>
+            </>
+          )}
+        </h1>
         <p className="dashboard-subtitle">
           {isLoggedIn ? "Here's an overview of your tasks" : 'Sign in to create, track, and manage your tasks in one place.'}
         </p>

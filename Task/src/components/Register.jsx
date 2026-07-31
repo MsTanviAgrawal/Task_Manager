@@ -12,9 +12,6 @@ function Register({ onRegister, onSwitchToLogin }) {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // console.log("REQ BODY:", req.body);
-  // console.log("REGISTER DATA:", { username, email, password, role });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -44,7 +41,7 @@ function Register({ onRegister, onSwitchToLogin }) {
       setSuccess('Registration successful! Logging you in...');
       setTimeout(() => {
         onRegister(data.user, data.token);
-      });
+      }, 1000);
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -55,51 +52,57 @@ function Register({ onRegister, onSwitchToLogin }) {
   return (
     <div className="register-container">
       <div className="register-box">
-        <h2>Register</h2>
+        <h2>Create Account</h2>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Choose a username"
-            />
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Choose username"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email"
+              />
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-            />
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Choose password"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm password"
+              />
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Choose a password"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm your password"
-            />
-          </div>
+
           <div className="form-group">
             <label htmlFor="role">Role</label>
-            <select 
+            <select
               id="role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
@@ -108,13 +111,16 @@ function Register({ onRegister, onSwitchToLogin }) {
               <option value="admin">Admin</option>
             </select>
           </div>
+
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
+
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
-        <p className="switch-auth">
+
+        <p className="switch-auth1">
           Already have an account? <span onClick={onSwitchToLogin}>Login</span>
         </p>
       </div>

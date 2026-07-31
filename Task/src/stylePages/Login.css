@@ -16,7 +16,7 @@
 }
 
 .login-box h2 {
-  color: #333;
+  color: #5303ae;
   text-align: center;
   margin-bottom: 2rem;
   font-size: clamp(1.5rem, 3vw, 2rem);
@@ -28,7 +28,7 @@
 
 .form-group label {
   display: block;
-  color: #555;
+  color: #2b2c2d;
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
@@ -75,20 +75,24 @@
 }
 
 .switch-auth {
-  text-align: center;
-  margin-top: 1.5rem;
-  color: #666;
+   text-align: center;
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+  color: #718096;
+  font-size: 0.875rem;
 }
 
 .switch-auth span {
-  color: #667eea;
+  color: #de44bf;
   cursor: pointer;
   font-weight: 600;
-  text-decoration: underline;
+  margin-left: 0.2rem;
+  transition: color 0.2s ease;
 }
 
 .switch-auth span:hover {
-  color: #764ba2;
+  color: #c50ea0;
+  text-decoration: underline;
 }
 
 @media (max-width: 480px) {
