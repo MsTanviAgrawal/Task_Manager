@@ -45,11 +45,11 @@
 
 .user-stats .stat {
   padding: clamp(0.375rem, 1vw, 0.5rem) clamp(0.75rem, 1.5vw, 1rem);
-  background: #f5f5f5;
+  background: #ffd8ef;
   border-radius: 20px;
   font-weight: 600;
   font-size: clamp(0.813rem, 1.5vw, 0.938rem);
-  color: #666;
+  color: #ca137e;
 }
 
 .user-stats .stat.admin {
@@ -174,8 +174,8 @@
 .task-badge {
   background: #667eea;
   color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  padding: 0.25rem 0.65rem;
+  border-radius: 26px; ;
   font-weight: 600;
   font-size: 0.875rem;
 }

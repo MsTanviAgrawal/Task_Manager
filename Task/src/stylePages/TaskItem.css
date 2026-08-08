@@ -108,9 +108,9 @@
   background: #e74c3c;
   color: white;
   padding: 0.15rem 0.5rem;
-  border-radius: 8px;
-  font-size: 0.7rem;
-  font-weight: 700;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 600;
 }
 
 .task-actions {
@@ -121,10 +121,10 @@
 }
 
 .btn-action {
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 1rem;
   border: none;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  border-radius: 8px;
+  font-size: 0.87rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -140,28 +140,32 @@
 }
 
 .btn-edit {
-  background: #ffc107;
-  color: #333;
+  background: #ffebb0;
+  color: #c49406;
+  border: 1px solid #ffc107;
 }
 
 .btn-edit:hover {
-  background: #e0a800;
+  background: #ffc107;
+  color: white;
 }
 
 .btn-delete {
+  background: #ffc1bb;
+  color: #ce1905;
+  border: 1px solid #e74c3c;
+}
+
+.btn-delete:hover {
   background: #e74c3c;
   color: white;
 }
 
-.btn-delete:hover {
-  background: #c0392b;
-}
-
 .status-select {
-  padding: 0.5rem;
+  padding: 0.4rem 1rem;
   border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  border-radius: 8px;
+  font-size: 0.87rem;
   cursor: pointer;
   background: white;
 }
